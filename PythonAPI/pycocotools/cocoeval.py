@@ -248,6 +248,7 @@ class COCOeval:
             return None
 
         for g in gt:
+            # 根据区域大小过滤是否要计算
             if g['ignore'] or (g['area']<aRng[0] or g['area']>aRng[1]):
                 g['_ignore'] = 1
             else:
@@ -262,14 +263,19 @@ class COCOeval:
         # load computed ious
         ious = self.ious[imgId, catId][:, gtind] if len(self.ious[imgId, catId]) > 0 else self.ious[imgId, catId]
 
+        # 所有的iou 值
         T = len(p.iouThrs)
         G = len(gt)
         D = len(dt)
+        # 每个iou下面 gtm[tind,m]     = d['id']， gt 对应的 dt的 id位置
         gtm  = np.zeros((T,G))
+        # 每个iou下面 detection 匹配到的 gt的索引位置
         dtm  = np.zeros((T,D))
         gtIg = np.array([g['_ignore'] for g in gt])
+        # 每个iou下面的匹配的数据
         dtIg = np.zeros((T,D))
         if not len(ious)==0:
+            # print(f'p iou {p.iouThrs}')
             for tind, t in enumerate(p.iouThrs):
                 for dind, d in enumerate(dt):
                     # information about best match so far (m=-1 -> unmatched)
@@ -297,7 +303,7 @@ class COCOeval:
         # set unmatched detections outside of area range to ignore
         a = np.array([d['area']<aRng[0] or d['area']>aRng[1] for d in dt]).reshape((1, len(dt)))
         dtIg = np.logical_or(dtIg, np.logical_and(dtm==0, np.repeat(a,T,0)))
-        # store results for given image and category
+        # store results for given image and category， 在每个threshold下面
         return {
                 'image_id':     imgId,
                 'category_id':  catId,
@@ -327,6 +333,7 @@ class COCOeval:
             p = self.params
         p.catIds = p.catIds if p.useCats == 1 else [-1]
         T           = len(p.iouThrs)
+        # 101 个点 [0, 0.01, 1]
         R           = len(p.recThrs)
         K           = len(p.catIds) if p.useCats else 1
         A           = len(p.areaRng)
@@ -469,6 +476,7 @@ class COCOeval:
             stats[9] = _summarize(0, areaRng='small', maxDets=self.params.maxDets[2])
             stats[10] = _summarize(0, areaRng='medium', maxDets=self.params.maxDets[2])
             stats[11] = _summarize(0, areaRng='large', maxDets=self.params.maxDets[2])
+            # stats[12] = _summarize(0, iouThr=.5, maxDets=self.params.maxDets[2])
             return stats
         def _summarizeKps():
             stats = np.zeros((10,))
