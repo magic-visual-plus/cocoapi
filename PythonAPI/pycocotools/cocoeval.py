@@ -357,6 +357,7 @@ class COCOeval:
         i_list = [n for n, i in enumerate(p.imgIds)  if i in setI]
         I0 = len(_pe.imgIds)
         A0 = len(_pe.areaRng)
+        last_max_det = m_list[-1]
         # retrieve E at each category, area range, and max number of detections
         for k, k0 in enumerate(k_list):
             Nk = k0*A0*I0
@@ -395,7 +396,7 @@ class COCOeval:
                         ss = np.zeros((R,))
                         px = np.linspace(0, 1, R)
                         
-                        if t == 0:
+                        if t == 0 and nd and last_max_det == maxDet and a == 0:
                             re_re = np.interp(-px, -dtScoresSorted, rc, left=0)
                             re_recall[t,:,k,a,m] = re_re
                             re_pre = np.interp(-px, -dtScoresSorted, pr, left=1)
