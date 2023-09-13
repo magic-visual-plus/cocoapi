@@ -20,3 +20,4 @@ PythonAPI/pycocotools.egg-info/
 PythonAPI/pr_curve.png
 PythonAPI/pycocotools/__pycache__/
 PythonAPI/pycocotools/*.so
+*.png
