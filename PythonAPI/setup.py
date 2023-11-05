@@ -1,5 +1,17 @@
 from setuptools import setup, Extension
 import numpy as np
+import distutils.ccompiler
+
+
+#
+# If running on Windows, compiler_name will be "msvc" so don't use gcc options
+#
+compiler_name = distutils.ccompiler.get_default_compiler()
+if compiler_name == "msvc":
+    extra_compile_args=[]
+else:
+    extra_compile_args=['-Wno-cpp', '-Wno-unused-function', '-std=c99'],
+    
 
 # To compile and install locally run "python setup.py build_ext --inplace"
 # To install library to Python site-packages run "python setup.py build_ext install"
@@ -9,7 +21,7 @@ ext_modules = [
         'pycocotools._mask',
         sources=['../common/maskApi.c', 'pycocotools/_mask.pyx'],
         include_dirs = [np.get_include(), '../common'],
-        extra_compile_args=['-Wno-cpp', '-Wno-unused-function', '-std=c99'],
+        extra_compile_args=extra_compile_args,
     )
 ]
 
