@@ -10,8 +10,9 @@ compiler_name = distutils.ccompiler.get_default_compiler()
 if compiler_name == "msvc":
     extra_compile_args=[]
 else:
-    extra_compile_args=['-Wno-cpp', '-Wno-unused-function', '-std=c99'],
-    
+    extra_compile_args=['-Wno-cpp', '-Wno-unused-function', '-std=c99']
+
+print(f'extra_compile_args {extra_compile_args}')
 
 # To compile and install locally run "python setup.py build_ext --inplace"
 # To install library to Python site-packages run "python setup.py build_ext install"
